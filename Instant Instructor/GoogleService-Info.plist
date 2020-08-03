@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>599752700183-hq6etepag2s5s061iqlerpsa513rcf35.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.599752700183-hq6etepag2s5s061iqlerpsa513rcf35</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCSf9IrUqK2NeJ5PgreNjyYHnkyfyf2cpQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>599752700183</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.instantinstructorapp.Instant-Instructor</string>
+	<key>PROJECT_ID</key>
+	<string>instant-instructor</string>
+	<key>STORAGE_BUCKET</key>
+	<string>instant-instructor.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:599752700183:ios:51944dd042debae76fc752</string>
+	<key>DATABASE_URL</key>
+	<string>https://instant-instructor.firebaseio.com</string>
+</dict>
+</plist>

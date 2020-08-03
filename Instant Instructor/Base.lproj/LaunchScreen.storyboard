@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleAspectFill" axis="vertical" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="G1d-CS-tbV">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <subviews>
+                                    <view contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="pJU-Fb-zmR" userLabel="Middle View">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Instant Instructor" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="20" translatesAutoresizingMaskIntoConstraints="NO" id="EH7-7w-nC4">
+                                                <rect key="frame" x="24" y="291" width="366" height="46.5"/>
+                                                <fontDescription key="fontDescription" name="GillSans-Bold" family="Gill Sans" pointSize="40"/>
+                                                <color key="textColor" red="0.83137254900000002" green="0.12941176469999999" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Find A Coach-Transparent" translatesAutoresizingMaskIntoConstraints="NO" id="zNY-Zj-XwA">
+                                                <rect key="frame" x="36.5" y="297.5" width="341" height="341"/>
+                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
+                                            </imageView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="EH7-7w-nC4" firstAttribute="centerX" secondItem="pJU-Fb-zmR" secondAttribute="centerX" id="O86-M0-OyV"/>
+                                            <constraint firstItem="zNY-Zj-XwA" firstAttribute="top" secondItem="EH7-7w-nC4" secondAttribute="bottom" constant="-40" id="TZd-ii-LUi"/>
+                                            <constraint firstItem="zNY-Zj-XwA" firstAttribute="centerY" secondItem="pJU-Fb-zmR" secondAttribute="centerY" constant="20" id="bNL-fw-1pZ"/>
+                                            <constraint firstItem="zNY-Zj-XwA" firstAttribute="centerX" secondItem="pJU-Fb-zmR" secondAttribute="centerX" id="wcj-ng-tI2"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="pJU-Fb-zmR" firstAttribute="centerX" secondItem="G1d-CS-tbV" secondAttribute="centerX" id="BYh-9q-vUe"/>
+                                    <constraint firstItem="pJU-Fb-zmR" firstAttribute="leading" secondItem="G1d-CS-tbV" secondAttribute="leading" id="XKa-e1-a2p"/>
+                                    <constraint firstItem="pJU-Fb-zmR" firstAttribute="centerY" secondItem="G1d-CS-tbV" secondAttribute="centerY" id="Xli-R4-aHj"/>
+                                    <constraint firstAttribute="trailing" secondItem="pJU-Fb-zmR" secondAttribute="trailing" id="xMw-Ph-CaR"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="0.94901960784313721" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="G1d-CS-tbV" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="CWa-8L-Paq"/>
+                            <constraint firstItem="G1d-CS-tbV" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="Sas-Ve-gtP"/>
+                            <constraint firstAttribute="bottom" secondItem="G1d-CS-tbV" secondAttribute="bottom" id="WNd-Vn-3Q3"/>
+                            <constraint firstItem="G1d-CS-tbV" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="YnX-6F-SDk"/>
+                            <constraint firstItem="G1d-CS-tbV" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="cKA-UB-WWw"/>
+                            <constraint firstItem="G1d-CS-tbV" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="wjl-bf-0yV"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="titleLabel" destination="EH7-7w-nC4" id="5VM-8F-x8c"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="52.173913043478265" y="375"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Find A Coach-Transparent" width="341" height="341"/>
+    </resources>
+</document>
