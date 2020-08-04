@@ -1,27 +1,27 @@
 //
-//  ViewController.swift
-//  Find A Coach
+//  SearchViewController.swift
+//  Instant Instructor
 //
-//  Created by Christian Lizardi on 7/9/20.
+//  Created by Christian Lizardi on 8/4/20.
 //  Copyright © 2020 Find A Coach. All rights reserved.
 //
 
 import UIKit
 import CoreLocation
 
-class SearchViewController: UIViewController {
+class SearchViewController: UITableViewController {
 
     
     @IBOutlet weak var searchTextField: UITextField!
     
     let locationManager = CLLocationManager()
     var locationUpdater = LocationUpdater()
-   
+    let instructorArray = ["Bob The Builder", "Nathaniel Bacon", "Kendrick Lamar"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        navigationItem.hidesBackButton = true 
+        navigationItem.hidesBackButton = true
         
         searchTextField.delegate = self
         locationUpdater.delegate = self
@@ -29,9 +29,12 @@ class SearchViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         
+        tableView.register(UINib(nibName: K.instructorCellNib, bundle: nil), forCellReuseIdentifier: K.instructorCell)
+        
     }
     
-    @IBAction func profileButtonPressed(_ sender: UIButton) {
+    
+    @IBAction func profileButtonPressed(_ sender: UIBarButtonItem) {
         self.performSegue(withIdentifier: K.searchSegueProfile, sender: self)
     }
     
@@ -41,13 +44,35 @@ class SearchViewController: UIViewController {
     }
     
     
-    @IBAction func messageButtonPressed(_ sender: UIButton) {
-        self.performSegue(withIdentifier: K.searchSegueMessage, sender: self)
+    @IBAction func messageButtonPressed(_ sender: UIBarButtonItem) {
+        self.performSegue(withIdentifier: K.searchSegueMessageChoice, sender: self)
     }
-
+    
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+           return instructorArray.count
+       }
+       
+       override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+           let cell = tableView.dequeueReusableCell(withIdentifier: K.instructorCell, for: indexPath) as! InstructorChoiceCell
+           
+           cell.profileNameLabel.text = instructorArray[indexPath.row]
+           
+           return cell
+       }
+       
+       override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+           let messageSender = instructorArray[indexPath.row]
+           print(messageSender)
+           
+           tableView.deselectRow(at: indexPath, animated: true)
+           self.performSegue(withIdentifier: K.searchSegueInstructor, sender: self)
+    
+       }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == K.searchSegueMessage {
-            _ = segue.destination as! MessageViewController
+        if segue.identifier == K.searchSegueMessageChoice {
+            _ = segue.destination as! MessageChoiceViewController
         }
         if segue.identifier == K.searchSegueFilters {
             _ = segue.destination as! SearchFilterViewController
@@ -55,8 +80,10 @@ class SearchViewController: UIViewController {
         if segue.identifier == K.searchSegueProfile {
             _ = segue.destination as! YourProfileViewController
         }
-      
-        
+        if segue.identifier == K.searchSegueInstructor {
+            _ = segue.destination as! InstructorProfileViewController
+        }
+
     }
 }
 

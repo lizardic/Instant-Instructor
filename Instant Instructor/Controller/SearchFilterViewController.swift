@@ -37,6 +37,7 @@ class SearchFilterViewController: UIViewController {
     @IBAction func proximityValueChange(_ sender: UISlider) {
         let proximity = String(format: "%.0f", sender.value)
         proximityValue.text = "\(proximity) miles"
+        sender.setValue(sender.value, animated: true)
         
     }
     

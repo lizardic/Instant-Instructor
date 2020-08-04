@@ -9,9 +9,10 @@
 import Foundation
 
 struct K {
-    static let searchSegueMessage = "searchToMessage"
+    static let searchSegueMessageChoice = "searchToMessageChoice"
     static let searchSegueFilters = "searchToFilters"
     static let searchSegueProfile = "searchToProfile"
+    static let searchSegueInstructor = "searchToInstructor"
     static let profileSegue = "profileToEdit"
     static let welcomeSegueLogin = "welcomeToLogin"
     static let welcomeSegueRegister = "welcomeToRegister"
@@ -22,6 +23,10 @@ struct K {
     static let instructorSegueWork = "instructorToWork"
     static let workSegue = "workToSearch"
     static let certificationSegue = "certificationToSearch"
+    static let messageChoiceSegueMessages = "messageChoiceToMessages"
+    static let messageChoiceSegueNewMessage = "messageChoiceToNewMessage"
+    static let newMessageSegue = "newMessageToMessages"
+    static let instructorSegueMessages = "instructorToMessages"
     
     static let passwordsDontMatch = "Passwords do not match"
     static let instructorRequirements = "To become an Instructor on Instant Instructor, you must either have received certification to teach the activity or have taught the activity professionally at an organization. If neither of these apply to you, please do not create an Instructor account. "
@@ -31,6 +36,10 @@ struct K {
     
     static let messageCell = "Message Cell"
     static let messageCellNib = "MessageCell"
+    static let messageChoiceCell = "Message Choice Cell"
+    static let messageChoiceCellNib = "MessageChoiceCell"
+    static let instructorCell = "Instructor Cell"
+    static let instructorCellNib = "InstructorCell"
     
     struct FStore {
         static let collectionName = "messages"
