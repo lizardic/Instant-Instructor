@@ -7,53 +7,65 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseAuth
+import RealmSwift
 
 class MessageChoiceViewController: UITableViewController {
-
-    let messageSenderArray = ["Bob The Builder", "Nathaniel Bacon", "Kendrick Lamar"]
+    
+    var conversation : Conversation? = nil
+    var conversationArray : Results<Conversation>? = nil
+    let realm = try! Realm()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         tableView.register(UINib(nibName: K.messageChoiceCellNib, bundle: nil), forCellReuseIdentifier: K.messageChoiceCell)
+        loadConversations()
     }
     
+    func loadConversations() {
+        conversationArray = realm.objects(Conversation.self)
+    }
     @IBAction func newMessageButton(_ sender: UIBarButtonItem) {
         self.performSegue(withIdentifier: K.messageChoiceSegueNewMessage, sender: self)
     }
+    
+    func getOtherParticipants(_ conversation: Conversation) -> String {
+        let participants = conversation.participants
+        var otherParticipants = ""
+        for participant in participants {
+            if participant.email != Auth.auth().currentUser?.email {
+                otherParticipants = otherParticipants +  participant.username!
+            }
+        }
+        return otherParticipants
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messageSenderArray.count
+        return conversationArray!.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.messageChoiceCell, for: indexPath) as! MessageChoiceCell
         
-        cell.profileNameLabel.text = messageSenderArray[indexPath.row]
+        let conversation = conversationArray![indexPath.row]
+        cell.profileNameLabel.text = getOtherParticipants(conversation)
         
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let messageSender = messageSenderArray[indexPath.row]
-        print(messageSender)
-        
+        let conversation = conversationArray![indexPath.row]
+        self.conversation = conversation
         tableView.deselectRow(at: indexPath, animated: true)
         self.performSegue(withIdentifier: K.messageChoiceSegueMessages, sender: self)
  
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == K.messageChoiceSegueMessages {
-            _ = segue.destination as! MessageViewController
+            let destinationVC = segue.destination as! MessageViewController
+            destinationVC.parentConversation = self.conversation
         }
     }
 }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class WorkViewController: UIViewController {
 
@@ -19,14 +20,15 @@ class WorkViewController: UIViewController {
     @IBOutlet weak var sexPicker: UIPickerView!
     var currentActivity: String? = nil
     var currentSex: String? = nil
+    var newInstructor: Instructor? = nil
     
     let activityArray: Array = K.activityArray
-    
     let sexArray: Array = K.sexArray
+    
+    let realm = try! Realm()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         workPlaceTextField.delegate = self
         workPlaceTwoTextField.delegate = self
         yearsTextField.delegate = self
@@ -37,24 +39,45 @@ class WorkViewController: UIViewController {
     }
     
     @IBAction func signUpButtonPressed(_ sender: UIButton) {
-        self.performSegue(withIdentifier: K.workSegue, sender: self)
+        if workPlaceTextField.text?.count == 0 || workPlaceTwoTextField.text?.count == 0 || yearsTextField.text?.count == 0 {
+            displayError(error: "Must fill out all fields")
+        } else {
+            newInstructor?.workplace = workPlaceTextField.text!
+            newInstructor?.workplaceTwo = workPlaceTwoTextField.text!
+            newInstructor?.yearsExperience = yearsTextField.text!
+            newInstructor?.activity = currentActivity!
+            newInstructor?.sex = currentSex!
+            saveInstructor(newInstructor!)
+            self.performSegue(withIdentifier: K.workSegue, sender: self)
+        }
+
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func saveInstructor(_ instructor: Instructor) {
+        do {
+            try realm.write {
+                realm.add(instructor)
+            }
+        } catch {
+            print("Error saving instructor, \(error)")
+        }
     }
-    */
+    
+    func displayError(error: String) {
+        let alert = UIAlertController(title: "Failed Sign Up Attempt", message: error, preferredStyle: .alert)
+        let action = UIAlertAction(title: "Dismiss", style: .default) { (action) in
+            //what will happen when you click dismiss
+            print("Success")
+        }
+        
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+        
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == K.workSegue {
             _ = segue.destination as! SearchViewController
-      
-        
         }
 
     }

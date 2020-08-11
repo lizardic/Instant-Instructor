@@ -7,8 +7,10 @@
 //
 
 import Foundation
+import RealmSwift
 
-struct Message {
-    let sender: String
-    let body: String
+class Message: Object {
+    @objc dynamic var sender: String? = nil
+    @objc dynamic var body: String? = nil
+    var parentConversation = LinkingObjects(fromType: Conversation.self, property: "messages")
 }

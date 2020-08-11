@@ -1,4 +1,4 @@
-module Pods_Instant_Instructor {
+framework module Pods_Instant_Instructor {
   umbrella header "Pods-Instant Instructor-umbrella.h"
 
   export *

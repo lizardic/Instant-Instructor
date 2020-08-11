@@ -10,22 +10,34 @@ import UIKit
 
 class EditProfileViewController: UIViewController {
 
+    @IBOutlet weak var generalInstructorStack: UIStackView!
+    @IBOutlet weak var certifiedInstructorStack: UIStackView!
+    @IBOutlet weak var experiencedInstructorStack: UIStackView!
+    //SET UP OUTLETS WTIH TEXTFIELDS
+    var currentUser: GeneralAccount? = nil
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        //SET UP TEXT FIELDS WITH CURRENT USERS INFORMATION
+        //GET RID OF CERTAIN STACK VIEWS BASED ON THE PERSONS INFO
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
     }
 
+}
+
+extension EditProfileViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        //UPDATE USER INFORMATION
+        
+    }
 }

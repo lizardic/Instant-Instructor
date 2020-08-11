@@ -8,31 +8,42 @@
 
 import UIKit
 import CoreLocation
+import RealmSwift
 
 class SearchViewController: UITableViewController {
-
     
-    @IBOutlet weak var searchTextField: UITextField!
+    
+    @IBOutlet weak var searchBar: UISearchBar!
     
     let locationManager = CLLocationManager()
     var locationUpdater = LocationUpdater()
-    let instructorArray = ["Bob The Builder", "Nathaniel Bacon", "Kendrick Lamar"]
+    var instructorArray : Results<Instructor>? = nil
+    var instructor : Instructor? = nil
+    let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         navigationItem.hidesBackButton = true
         
-        searchTextField.delegate = self
+        searchBar.delegate = self
         locationUpdater.delegate = self
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         
+        
+        locationManager.requestLocation()
+        
         tableView.register(UINib(nibName: K.instructorCellNib, bundle: nil), forCellReuseIdentifier: K.instructorCell)
+        loadInstructors()
         
     }
     
+    func loadInstructors() {
+        instructorArray = realm.objects(Instructor.self)
+        
+    }
     
     @IBAction func profileButtonPressed(_ sender: UIBarButtonItem) {
         self.performSegue(withIdentifier: K.searchSegueProfile, sender: self)
@@ -50,25 +61,24 @@ class SearchViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return instructorArray.count
+           return instructorArray!.count
        }
        
-       override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-           let cell = tableView.dequeueReusableCell(withIdentifier: K.instructorCell, for: indexPath) as! InstructorChoiceCell
-           
-           cell.profileNameLabel.text = instructorArray[indexPath.row]
-           
-           return cell
-       }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.instructorCell, for: indexPath) as! InstructorChoiceCell
+        cell.profileNameLabel.text = (instructorArray![indexPath.row] as GeneralAccount).username
+        
+        return cell
+    }
        
-       override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-           let messageSender = instructorArray[indexPath.row]
-           print(messageSender)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.instructor = instructorArray![indexPath.row]
+        
            
-           tableView.deselectRow(at: indexPath, animated: true)
-           self.performSegue(withIdentifier: K.searchSegueInstructor, sender: self)
+        tableView.deselectRow(at: indexPath, animated: true)
+        self.performSegue(withIdentifier: K.searchSegueInstructor, sender: self)
     
-       }
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == K.searchSegueMessageChoice {
@@ -81,31 +91,21 @@ class SearchViewController: UITableViewController {
             _ = segue.destination as! YourProfileViewController
         }
         if segue.identifier == K.searchSegueInstructor {
-            _ = segue.destination as! InstructorProfileViewController
+            let destinationVC = segue.destination as! InstructorProfileViewController
+            destinationVC.instructor = self.instructor
         }
 
     }
 }
 
-//MARK: - UITextFieldDelegate
+//MARK: - UISearchBarDelegate
 
-extension SearchViewController: UITextFieldDelegate {
-    @IBAction func searchButtonPressed(_ sender: UIButton) {
-        searchTextField.endEditing(true)
-        locationManager.requestLocation()
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        searchTextField.endEditing(true)
-    }
-    
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        //Use the searchTextField.text to do whatever you need
-        searchTextField.text = ""
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        loadInstructors()
     }
     
 }

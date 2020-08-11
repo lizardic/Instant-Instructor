@@ -8,27 +8,25 @@
 
 import UIKit
 import Firebase
+import FirebaseAuth
+import RealmSwift
 
 class RegisterViewController: UIViewController {
 
     
-    @IBOutlet weak var firstNameTextField: UITextField!
-    
-    @IBOutlet weak var lastNameTextField: UITextField!
-    
+    @IBOutlet weak var fullNameTextField: UITextField!
+    @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
-    
     @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var errorDisplayLabel: UILabel!
-    
     @IBOutlet weak var confirmPasswordTextField: UITextField!
+    
+    let realm = try! Realm()
+    let newAccount = GeneralAccount()
+    let newInstructor = Instructor()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        errorDisplayLabel.text = ""
-        firstNameTextField.delegate = self
-        lastNameTextField.delegate = self
+        fullNameTextField.delegate = self
         emailTextField.delegate = self
         passwordTextField.delegate = self
         confirmPasswordTextField.delegate = self
@@ -36,53 +34,79 @@ class RegisterViewController: UIViewController {
     }
     
     @IBAction func signUpButtonPressed(_ sender: UIButton) {
-        if confirmPasswordTextField.text == passwordTextField.text {
+        if fullNameTextField.text?.count == 0 {
+            displayError(error: "Must fill in all fields")
+        } else if confirmPasswordTextField.text == passwordTextField.text {
             if let email = emailTextField.text, let password = passwordTextField.text {
                 Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                     if let e = error {
-                        self.errorDisplayLabel.text = e.localizedDescription
+                        self.displayError(error: e.localizedDescription)
                     } else {
+                        self.newAccount.name = self.fullNameTextField.text!
+                        self.newAccount.username = self.usernameTextField.text!
+                        self.newAccount.email = self.emailTextField.text!
+                        self.newAccount.password = self.passwordTextField.text!
+                        self.saveAccount(self.newAccount)
+                        
                         self.performSegue(withIdentifier: K.registerSegueSearch, sender: self)
                     }
                 }
                 
             }
         } else {
-            errorDisplayLabel.text = K.passwordsDontMatch
+            self.displayError(error: "Passwords don't match")
         }
 
     }
-    
-    @IBAction func instructorButtonPressed(_ sender: UIButton) {
-        if confirmPasswordTextField.text == passwordTextField.text {
-            if let email = emailTextField.text, let password = passwordTextField.text {
-                Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
-                    if let e = error {
-                        self.errorDisplayLabel.text = e.localizedDescription
-                    } else {
-                        self.performSegue(withIdentifier: K.registerSegueInstructor, sender: self)
-                    }
-                }
-                
+    func saveAccount(_ account: GeneralAccount) {
+        do {
+            try realm.write {
+                realm.add(account)
             }
-        } else {
-            errorDisplayLabel.text = K.passwordsDontMatch
+        } catch {
+            print("Error saving account, \(error)")
         }
+    }
+    func displayError(error: String) {
+        let alert = UIAlertController(title: "Failed Sign Up Attempt", message: error, preferredStyle: .alert)
+        let action = UIAlertAction(title: "Dismiss", style: .default) { (action) in
+            //what will happen when you click dismiss
+            print("Success")
+            
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
         
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func instructorButtonPressed(_ sender: UIButton) {
+        if fullNameTextField.text?.count == 0 {
+             displayError(error: "Must fill in all fields")
+         } else if confirmPasswordTextField.text == passwordTextField.text {
+             if let email = emailTextField.text, let password = passwordTextField.text {
+                 Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+                     if let e = error {
+                         self.displayError(error: e.localizedDescription)
+                     } else {
+                        self.newInstructor.name = self.fullNameTextField.text!
+                        self.newInstructor.username = self.usernameTextField.text!
+                        self.newInstructor.email = self.emailTextField.text!
+                        self.newInstructor.password = self.passwordTextField.text!
+                        
+                         self.performSegue(withIdentifier: K.registerSegueInstructor, sender: self)
+                     }
+                 }
+                 
+             }
+         } else {
+             self.displayError(error: "Passwords don't match")
+         }
     }
-    */
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == K.registerSegueInstructor {
-            _ = segue.destination as! InstructorViewController
+            let destinationVC = segue.destination as! InstructorViewController
+            destinationVC.newInstructor = newInstructor
         }
         if segue.identifier == K.registerSegueSearch {
             _ = segue.destination as! SearchViewController
@@ -103,10 +127,6 @@ extension RegisterViewController: UITextFieldDelegate {
     
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        //Use the textField to do whatever you need
     }
     
 }

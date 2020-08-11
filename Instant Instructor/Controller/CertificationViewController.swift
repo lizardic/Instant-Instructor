@@ -7,23 +7,25 @@
 //
 
 import UIKit
+import RealmSwift
 
 class CertificationViewController: UIViewController {
 
+    @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var organizationTextField: UITextField!
     @IBOutlet weak var activityPicker: UIPickerView!
     @IBOutlet weak var sexPicker: UIPickerView!
     var currentActivity: String? = nil
     var currentSex: String? = nil
+    var newInstructor : Instructor? = nil
     
     let activityArray: Array = K.activityArray
-    
     let sexArray: Array = K.sexArray
+    
+    let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         organizationTextField.delegate = self
         activityPicker.delegate = self
         activityPicker.dataSource = self
@@ -32,18 +34,38 @@ class CertificationViewController: UIViewController {
     }
     
     @IBAction func signUpButtonPressed(_ sender: UIButton) {
-        self.performSegue(withIdentifier: K.certificationSegue, sender: self)
+        if organizationTextField.text?.count == 0 {
+            displayError(error: "Must fill out all fields")
+        } else {
+            newInstructor?.organizationCertified = organizationTextField.text!
+            newInstructor?.certificationDate = datePicker.date
+            newInstructor?.activity = currentActivity!
+            newInstructor?.sex = currentSex!
+            saveInstructor(newInstructor!)
+            self.performSegue(withIdentifier: K.certificationSegue, sender: self)
+        }
+    }
+    func saveInstructor(_ instructor: Instructor) {
+        do {
+            try realm.write {
+                realm.add(instructor)
+            }
+        } catch {
+            print("Error saving instructor, \(error)")
+        }
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func displayError(error: String) {
+        let alert = UIAlertController(title: "Failed Sign Up Attempt", message: error, preferredStyle: .alert)
+        let action = UIAlertAction(title: "Dismiss", style: .default) { (action) in
+            //what will happen when you click dismiss
+            print("Success")
+            
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+        
     }
-    */
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == K.certificationSegue {

@@ -8,11 +8,14 @@
 
 import UIKit
 import Firebase
+import FirebaseAuth
+import RealmSwift
 
 class LoginViewController: UIViewController {
 
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -25,26 +28,25 @@ class LoginViewController: UIViewController {
         if let email = emailTextField.text, let password = passwordTextField.text {
             Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
                 if let e = error {
-                    print(e)
+                    self.displayError(error: e.localizedDescription)
                 } else {
                     self.performSegue(withIdentifier: K.loginSegue, sender: self)
                 }
             }
-            
-
         } 
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func displayError(error: String) {
+        let alert = UIAlertController(title: "Failed Login Attempt", message: error, preferredStyle: .alert)
+        let action = UIAlertAction(title: "Dismiss", style: .default) { (action) in
+            //what will happen when you click dismiss
+            print("Success")
+            
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+        
     }
-    */
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == K.loginSegue {

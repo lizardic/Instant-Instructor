@@ -8,76 +8,53 @@
 
 import UIKit
 import Firebase
+import FirebaseAuth
+import RealmSwift
 
 class MessageViewController: UIViewController {
 
     @IBOutlet weak var messageTextField: UITextField!
+    @IBOutlet weak var navigationBar: UINavigationItem!
     
     @IBOutlet weak var tableView: UITableView!
-    let db = Firestore.firestore()
-    
-    var messages: [Message] = []
+    let realm = try! Realm()
+    var messages: Results<Message>? = nil
+    var parentConversation: Conversation? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         messageTextField.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UINib(nibName: K.messageCellNib, bundle: nil), forCellReuseIdentifier: K.messageCell)
         
+        
+        navigationBar.title = getOtherParticipants(parentConversation!)
+        
         loadMessages()
     }
     
-    func loadMessages() {
-        
-        db.collection(K.FStore.collectionName)
-            .order(by: K.FStore.dateField)
-            .addSnapshotListener({ (querySnapshot, error) in
-            
-            self.messages = []
-            
-            if let e = error {
-                print("There was an issure retrieving data from Firestore. \(e)")
-            } else {
-                if let snapshotDocuments = querySnapshot?.documents {
-                    for doc in snapshotDocuments {
-                        let data = doc.data()
-                        if let messageSender = data[K.FStore.senderField] as? String, let messageBody = data[K.FStore.bodyField] as? String {
-                            let newMessage = Message(sender: messageSender, body: messageBody)
-                            self.messages.append(newMessage)
-                            
-                            DispatchQueue.main.async {
-                                self.tableView.reloadData()
-                                let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-                                self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-                                
-                            }
-                        }
-                    }
-                }
+    func getOtherParticipants(_ conversation: Conversation) -> String {
+        let participants = conversation.participants
+        var otherParticipants = ""
+        for participant in participants {
+            if participant.email != Auth.auth().currentUser?.email {
+                otherParticipants = otherParticipants +  participant.username!
             }
-        })
+        }
+        return otherParticipants
     }
-
-
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func loadMessages() {
+        messages = realm.objects(Message.self)
     }
-    */
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
     }
 }
 
+//MARK: - UITextFieldDelegate
 extension MessageViewController: UITextFieldDelegate {
     @IBAction func sendButtonPressed(_ sender: UIButton) {
         messageTextField.endEditing(true)
@@ -94,46 +71,55 @@ extension MessageViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         //Use the textfield.text to do whatever you need
         if let messageBody = messageTextField.text, let messageSender = Auth.auth().currentUser?.email {
-            db.collection(K.FStore.collectionName).addDocument(data: [K.FStore.senderField: messageSender, K.FStore.bodyField: messageBody, K.FStore.dateField: Date().timeIntervalSince1970]) { (error) in
-                if let e = error {
-                    print("There was an issue saving data to Firestore. \(e)")
-                } else {
-                    print("successfully saved data")
-                }
-            }
+            let newMessage = Message()
+            newMessage.body = messageBody
+            newMessage.sender = messageSender
+            saveMessage(newMessage)
         }
         messageTextField.text = ""
+        loadMessages()
     }
-    
+    func saveMessage(_ message: Message) {
+        do {
+            try realm.write {
+                realm.add(message)
+            }
+        } catch {
+            print("Error saving message, \(error)")
+        }
+    }
 }
 
+//MARK: - UITableViewDataSource
 extension MessageViewController: UITableViewDataSource {
    
    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-       return messages.count
+       return messages!.count
    }
    
    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let message = messages[indexPath.row]
+        let message = messages![indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: K.messageCell, for: indexPath) as! MessageCell
         cell.label.text = message.body
-        if message.sender == Auth.auth().currentUser?.email {
-            cell.leftImageView.isHidden = true
-            cell.leftFillerImageView.isHidden = false
-            cell.rightImageView.isHidden = true
-        } else {
-            cell.leftImageView.isHidden = false
-            cell.leftFillerImageView.isHidden = true
-            cell.rightImageView.isHidden = false
-            cell.messageBubble.backgroundColor = UIColor(named: "BrandDarkGray")
-    }
+        cell.leftImageView.isHidden = true
+        cell.leftFillerImageView.isHidden = false
+        cell.rightImageView.isHidden = true
+//      ADJUSTING CELL LOOK BASED ON WHO SENT IT
+//        if message.sender == Auth.auth().currentUser?.email {
+//            cell.leftImageView.isHidden = true
+//            cell.leftFillerImageView.isHidden = false
+//            cell.rightImageView.isHidden = true
+//        } else {
+//            cell.leftImageView.isHidden = false
+//            cell.leftFillerImageView.isHidden = true
+//            cell.rightImageView.isHidden = false
+//            cell.messageBubble.backgroundColor = UIColor(named: "BrandDarkGray")
+//        }
 
         return cell 
    }
 }
-
+//MARK: - UITableViewDelegate
 extension MessageViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //do something when they select a certain row
-    }
+    
 }
