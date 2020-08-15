@@ -13,12 +13,16 @@ class NewConversationViewController: UITableViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var instructorArray : Results<Instructor>? = nil
-    var conversation : Conversation? = nil
+    var instructorArray : Results<Instructor>?
+    var conversation : Conversation? 
     let realm = try! Realm()
+    let defaultInstructor = Instructor()
+    var activityFilter: String?
+    var sexFilter: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        defaultInstructor.username = "No instructors match search"
         tableView.register(UINib(nibName: K.messageChoiceCellNib, bundle: nil), forCellReuseIdentifier: K.messageChoiceCell)
         searchBar.delegate = self
         loadInstructors()
@@ -43,7 +47,9 @@ class NewConversationViewController: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == K.newMessageSegueFilters {
-        _ = segue.destination as! SearchFilterViewController
+        let destinationVC = segue.destination as! ConversationFiltersViewController
+            
+        destinationVC.previousVC = self
         }
             
         if segue.identifier == K.newMessageSegueMessages {
@@ -55,28 +61,28 @@ class NewConversationViewController: UITableViewController {
 //MARK: - Table View Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return instructorArray!.count
+        return instructorArray?.count ?? 1
     }
        
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.messageChoiceCell, for: indexPath) as! MessageChoiceCell
            
-        cell.profileNameLabel.text = (instructorArray![indexPath.row] as GeneralAccount).username
+        cell.profileNameLabel.text = (instructorArray?[indexPath.row] ?? defaultInstructor as User).username
            
         return cell
     }
        
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let instructor = instructorArray![indexPath.row]
-        let newConversation = Conversation()
-        newConversation.participants.append(instructor)
-        //append the current user as a participant by searching for the current user by their email
-        self.conversation = newConversation
-        saveConversation(newConversation)
-        self.performSegue(withIdentifier: K.newMessageSegueMessages, sender: self)
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-    
+        if instructorArray != nil {
+            let instructor = instructorArray![indexPath.row]
+            let newConversation = Conversation()
+            newConversation.participants.append(instructor)
+            //append the current user as a participant by searching for the current user by their email
+            self.conversation = newConversation
+            saveConversation(newConversation)
+            self.performSegue(withIdentifier: K.newMessageSegueMessages, sender: self)
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
     
 

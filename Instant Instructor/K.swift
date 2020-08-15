@@ -31,8 +31,8 @@ struct K {
     
     static let passwordsDontMatch = "Passwords do not match"
     static let instructorRequirements = "To become an Instructor on Instant Instructor, you must either have received certification to teach the activity or have taught the activity professionally at an organization. If neither of these apply to you, please do not create an Instructor account. "
-    static let activityArray = ["Badminton", "Ballet", "Baseball", "Basketball", "Boxing", "Cello", "Clarinet", "Cricket", "Drawing", "Field Hockey", "Flute", "Football", "Golf", "Guitar", "Harp", "Hip Hop Dance", "Hockey", "Irish Dance", "Jazz Dance", "Latin Dance", "Modern/Lyrical Dance", "Oboe", "Painting", "Percussion", "Photography", "Piano", "Rugby", "Saxophone", "Sculpture", "Skiing", "Snowboarding", "Soccer", "Swimming", "Tap", "Tennis", "Textiles", "Track & Field", "Trombone", "Trumpet", "Tuba", "Violin", "Vocals", "Volleyball", "Woodwork",  "Wrestling"]
-    static let sexArray = ["Male", "Female", "Any"]
+    static let activityArray = ["","Badminton", "Ballet", "Baseball", "Basketball", "Boxing", "Cello", "Clarinet", "Cricket", "Drawing", "Field Hockey", "Flute", "Football", "Golf", "Guitar", "Harp", "Hip Hop Dance", "Hockey", "Irish Dance", "Jazz Dance", "Latin Dance", "Modern/Lyrical Dance", "Oboe", "Painting", "Percussion", "Photography", "Piano", "Rugby", "Saxophone", "Sculpture", "Skiing", "Snowboarding", "Soccer", "Swimming", "Tap", "Tennis", "Textiles", "Track & Field", "Trombone", "Trumpet", "Tuba", "Violin", "Vocals", "Volleyball", "Woodwork",  "Wrestling"]
+    static let sexArray = ["","Male", "Female", "Any"]
     static let sliderDescriptionArray = ["Proximity", "Stars", "Age"]
     static let sliderUnitArray = ["miles", "stars", "years old"]
     static let pickerDescriptionArray = ["Activity", "Sex"]

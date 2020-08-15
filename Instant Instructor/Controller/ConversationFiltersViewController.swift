@@ -1,19 +1,20 @@
 //
-//  SearchFilterViewController.swift
+//  ConversationFiltersTableViewController.swift
 //  Instant Instructor
 //
-//  Created by Christian Lizardi on 7/25/20.
+//  Created by Christian Lizardi on 8/14/20.
 //  Copyright © 2020 Find A Coach. All rights reserved.
 //
 
 import UIKit
 
-class SearchFilterViewController: UIViewController {
+class ConversationFiltersViewController: UIViewController {
     
     @IBOutlet weak var activityPicker: UIPickerView!
     @IBOutlet weak var sexPicker: UIPickerView!
-    var previousVC: SearchViewController?
+    var previousVC: NewConversationViewController?
     
+
     
     let activityArray: Array = K.activityArray
     
@@ -39,7 +40,7 @@ class SearchFilterViewController: UIViewController {
 
 //MARK: - UIPickerViewDataSource
 
-extension SearchFilterViewController: UIPickerViewDataSource {
+extension ConversationFiltersViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -58,7 +59,7 @@ extension SearchFilterViewController: UIPickerViewDataSource {
 
 //MARK: - UIPickerViewDelegate
 
-extension SearchFilterViewController: UIPickerViewDelegate {
+extension ConversationFiltersViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if pickerView == sexPicker {
             return sexArray[row]

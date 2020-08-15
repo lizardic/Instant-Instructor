@@ -10,7 +10,9 @@ import Foundation
 import RealmSwift
 
 class Message: Object {
-    @objc dynamic var sender: String? = nil
-    @objc dynamic var body: String? = nil
+    @objc dynamic var sender: String?
+    @objc dynamic var body: String?
+    @objc dynamic var date: Date?
     var parentConversation = LinkingObjects(fromType: Conversation.self, property: "messages")
 }
+

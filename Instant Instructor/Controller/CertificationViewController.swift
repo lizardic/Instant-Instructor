@@ -15,9 +15,9 @@ class CertificationViewController: UIViewController {
     @IBOutlet weak var organizationTextField: UITextField!
     @IBOutlet weak var activityPicker: UIPickerView!
     @IBOutlet weak var sexPicker: UIPickerView!
-    var currentActivity: String? = nil
-    var currentSex: String? = nil
-    var newInstructor : Instructor? = nil
+    var currentActivity: String?
+    var currentSex: String?
+    var newInstructor : Instructor? 
     
     let activityArray: Array = K.activityArray
     let sexArray: Array = K.sexArray
@@ -34,16 +34,27 @@ class CertificationViewController: UIViewController {
     }
     
     @IBAction func signUpButtonPressed(_ sender: UIButton) {
-        if organizationTextField.text?.count == 0 {
-            displayError(error: "Must fill out all fields")
+        if let organization = organizationTextField.text {
+            newInstructor?.organizationCertified = organization
         } else {
-            newInstructor?.organizationCertified = organizationTextField.text!
-            newInstructor?.certificationDate = datePicker.date
-            newInstructor?.activity = currentActivity!
-            newInstructor?.sex = currentSex!
-            saveInstructor(newInstructor!)
-            self.performSegue(withIdentifier: K.certificationSegue, sender: self)
+            displayError(error: "Fill out organization")
         }
+        
+        newInstructor?.certificationDate = datePicker.date
+        if let activity = currentActivity {
+            newInstructor?.activity = activity
+        } else {
+            displayError(error: "Pick activity")
+        }
+        if let sex = currentSex {
+            newInstructor?.sex = sex
+            self.performSegue(withIdentifier: K.certificationSegue, sender: self)
+            saveInstructor(newInstructor!)
+        } else {
+            displayError(error: "Pick Sex")
+        }
+        
+        
     }
     func saveInstructor(_ instructor: Instructor) {
         do {

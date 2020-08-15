@@ -9,9 +9,9 @@
 import Foundation
 import RealmSwift
 
-class Instructor: GeneralAccount {
-    @objc dynamic var activity: String = ""
-    @objc dynamic var sex: String = ""
+class Instructor: User {
+    @objc dynamic var activity: String?
+    @objc dynamic var sex: String?
     @objc dynamic var workplace: String?
     @objc dynamic var workplaceTwo: String?
     @objc dynamic var yearsExperience: String?

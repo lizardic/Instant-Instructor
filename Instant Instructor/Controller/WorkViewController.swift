@@ -18,9 +18,9 @@ class WorkViewController: UIViewController {
     @IBOutlet weak var yearsTextField: UITextField!
     @IBOutlet weak var activityPicker: UIPickerView!
     @IBOutlet weak var sexPicker: UIPickerView!
-    var currentActivity: String? = nil
-    var currentSex: String? = nil
-    var newInstructor: Instructor? = nil
+    var currentActivity: String?
+    var currentSex: String?
+    var newInstructor: Instructor? 
     
     let activityArray: Array = K.activityArray
     let sexArray: Array = K.sexArray
@@ -39,18 +39,34 @@ class WorkViewController: UIViewController {
     }
     
     @IBAction func signUpButtonPressed(_ sender: UIButton) {
-        if workPlaceTextField.text?.count == 0 || workPlaceTwoTextField.text?.count == 0 || yearsTextField.text?.count == 0 {
-            displayError(error: "Must fill out all fields")
+       
+        if let workplace = workPlaceTextField.text {
+            newInstructor?.workplace = workplace
         } else {
-            newInstructor?.workplace = workPlaceTextField.text!
-            newInstructor?.workplaceTwo = workPlaceTwoTextField.text!
-            newInstructor?.yearsExperience = yearsTextField.text!
-            newInstructor?.activity = currentActivity!
-            newInstructor?.sex = currentSex!
-            saveInstructor(newInstructor!)
-            self.performSegue(withIdentifier: K.workSegue, sender: self)
+            displayError(error: "Fill out workplace")
         }
-
+        newInstructor?.workplaceTwo = workPlaceTwoTextField.text ?? ""
+        if let yearsExperience = yearsTextField.text {
+            newInstructor?.yearsExperience = yearsExperience
+        } else {
+            displayError(error: "Fill out # of years experience")
+        }
+        if currentActivity != "" {
+            newInstructor?.activity = currentActivity
+        } else {
+            displayError(error: "Pick activity")
+        }
+        if currentSex != "" {
+            newInstructor?.sex = currentSex
+            self.performSegue(withIdentifier: K.workSegue, sender: self)
+            saveInstructor(newInstructor!)
+        } else {
+            displayError(error: "Pick sex")
+        }
+    
+        
+        
+        
     }
     
     func saveInstructor(_ instructor: Instructor) {
@@ -109,7 +125,7 @@ extension WorkViewController: UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if pickerView == sexPicker {
-            return 3
+            return sexArray.count
         }
         else if pickerView == activityPicker {
             return activityArray.count

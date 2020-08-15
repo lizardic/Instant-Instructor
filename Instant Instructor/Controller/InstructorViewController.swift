@@ -11,13 +11,18 @@ import UIKit
 class InstructorViewController: UIViewController {
 
     @IBOutlet weak var coachRequirementsLabel: UILabel!
-    var newInstructor: Instructor? = nil
+    var newInstructor: Instructor?
+    
+    @IBOutlet weak var certificationButtonView: UIView!
+    @IBOutlet weak var experiencedButtonView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         coachRequirementsLabel.text = K.instructorRequirements
+        certificationButtonView.layer.cornerRadius = certificationButtonView.frame.size.height / 5
+        experiencedButtonView.layer.cornerRadius = experiencedButtonView.frame.size.height / 5
     }
     
     @IBAction func certificationButtonPressed(_ sender: UIButton) {

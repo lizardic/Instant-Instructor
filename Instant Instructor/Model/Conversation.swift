@@ -10,6 +10,7 @@ import Foundation
 import RealmSwift
 
 class Conversation: Object {
-    var participants = List<GeneralAccount>()
+    @objc dynamic var sender: String?
+    var participants = List<User>()
     var messages = List<Message>()
 }

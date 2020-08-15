@@ -21,18 +21,22 @@ class InstructorProfileViewController: UIViewController {
     @IBOutlet weak var workplaceLabel: UILabel!
     @IBOutlet weak var workplaceTwoLabel: UILabel!
     @IBOutlet weak var yearsExperienceLabel: UILabel!
-    
+    @IBOutlet weak var certifiedStack: UIStackView!
+    @IBOutlet weak var experiencedStack: UIStackView!
+    var conversation: Conversation?
     let realm = try! Realm()
-    var instructor : Instructor? = nil
+    var instructor : Instructor?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         adjustToInstructor()
+        
     }
 
     @IBAction func newMessageButonPressed(_ sender: UIBarButtonItem) {
         let newConversation = Conversation()
-        newConversation.participants.append(self.instructor!)
+        conversation = newConversation
         saveConversation(newConversation)
         self.performSegue(withIdentifier: K.instructorSegueMessages, sender: self)
     }
@@ -52,36 +56,52 @@ class InstructorProfileViewController: UIViewController {
         nameLabel.text = instructor!.name
         emailLabel.text = instructor!.email
         activityLabel.text = instructor!.activity
-        if let organization : String = instructor!.organizationCertified {
-            certifiedOrganizationLabel.isHidden = false
-            certifiedOrganizationLabel.text = "Certified By: \(organization)"
+        sexLabel.text = instructor!.sex
+        if instructor?.organizationCertified != nil {
+            certifiedStack.isHidden = false
+            experiencedStack.isHidden = true
+            prepareCertifiedStack()
+            
         } else {
-            certifiedOrganizationLabel.isHidden = true
+            certifiedStack.isHidden = true
+            experiencedStack.isHidden = false
+            prepareExperiencedStack()
         }
-        if let date : Date = instructor!.certificationDate {
-            dateLabel.isHidden = false
-            dateLabel.text = "Expiration Date: \(date)"
-        } else {
-            dateLabel.isHidden = true
+
         }
-        if let workplace : String = instructor!.workplace {
-            workplaceLabel.isHidden = false
-            workplaceLabel.text = "Current Workplace: \(workplace)"
-        } else {
-            workplaceLabel.isHidden = true
+    func prepareExperiencedStack() {
+
+        if experiencedStack.isHidden == false && certifiedStack.isHidden == true {
+            let workplace = instructor?.workplace
+            workplaceLabel.text = "Current Workplace:  " + workplace!
+            
+            
+            let workplaceTwo = instructor?.workplaceTwo
+            workplaceTwoLabel.text = "Past Workplace:  " + workplaceTwo!
+            
+
+            let years = instructor?.yearsExperience
+            yearsExperienceLabel.text = "Experience (years):  " + years!
+            
         }
-        if let workplaceTwo : String = instructor!.workplaceTwo {
-            workplaceTwoLabel.isHidden = false
-            workplaceTwoLabel.text = "Past Workplace: \(workplaceTwo)"
-        } else {
-            workplaceTwoLabel.isHidden = true
+
+    }
+    
+    func prepareCertifiedStack() {
+        if experiencedStack.isHidden == true && certifiedStack.isHidden == false {
+            let organization = instructor?.organizationCertified
+            certifiedOrganizationLabel.text = "Certified By:  " + organization!
+    
+            let date = instructor?.certificationDate
+            dateLabel.text = "Certification Expires:  \(date!)"
+    
         }
-        if let years : String = instructor!.yearsExperience {
-            yearsExperienceLabel.isHidden = false
-            yearsExperienceLabel.text = "Experience (years): \(years)"
-        } else {
-            yearsExperienceLabel.isHidden = true
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == K.instructorSegueMessages {
+            let destinationVC = segue.destination as! MessageViewController
+            destinationVC.parentConversation = self.conversation
         }
-        
     }
 }

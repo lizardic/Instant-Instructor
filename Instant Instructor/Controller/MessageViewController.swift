@@ -18,11 +18,12 @@ class MessageViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     let realm = try! Realm()
-    var messages: Results<Message>? = nil
-    var parentConversation: Conversation? = nil
+    var messages: Results<Message>?
+    var parentConversation: Conversation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadMessages()
         messageTextField.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
@@ -31,7 +32,7 @@ class MessageViewController: UIViewController {
         
         navigationBar.title = getOtherParticipants(parentConversation!)
         
-        loadMessages()
+        
     }
     
     func getOtherParticipants(_ conversation: Conversation) -> String {
@@ -46,11 +47,8 @@ class MessageViewController: UIViewController {
     }
     
     func loadMessages() {
-        messages = realm.objects(Message.self)
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
+        messages = parentConversation?.messages.sorted(byKeyPath: "date", ascending: true)
+        tableView.reloadData()
     }
 }
 
@@ -74,20 +72,25 @@ extension MessageViewController: UITextFieldDelegate {
             let newMessage = Message()
             newMessage.body = messageBody
             newMessage.sender = messageSender
+            newMessage.date = Date()
             saveMessage(newMessage)
+            loadMessages()
         }
         messageTextField.text = ""
-        loadMessages()
+        
     }
     func saveMessage(_ message: Message) {
-        do {
-            try realm.write {
-                realm.add(message)
+        if let currentConversation = self.parentConversation {
+            do {
+                try realm.write {
+                    currentConversation.messages.append(message)
+                    }
+                } catch {
+                    print("Error saving message, \(error)")
+                }
             }
-        } catch {
-            print("Error saving message, \(error)")
         }
-    }
+        
 }
 
 //MARK: - UITableViewDataSource
@@ -101,9 +104,6 @@ extension MessageViewController: UITableViewDataSource {
         let message = messages![indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: K.messageCell, for: indexPath) as! MessageCell
         cell.label.text = message.body
-        cell.leftImageView.isHidden = true
-        cell.leftFillerImageView.isHidden = false
-        cell.rightImageView.isHidden = true
 //      ADJUSTING CELL LOOK BASED ON WHO SENT IT
 //        if message.sender == Auth.auth().currentUser?.email {
 //            cell.leftImageView.isHidden = true
@@ -116,7 +116,7 @@ extension MessageViewController: UITableViewDataSource {
 //            cell.messageBubble.backgroundColor = UIColor(named: "BrandDarkGray")
 //        }
 
-        return cell 
+        return cell
    }
 }
 //MARK: - UITableViewDelegate

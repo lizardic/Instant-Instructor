@@ -17,13 +17,17 @@ class SearchViewController: UITableViewController {
     
     let locationManager = CLLocationManager()
     var locationUpdater = LocationUpdater()
-    var instructorArray : Results<Instructor>? = nil
-    var instructor : Instructor? = nil
+    var instructorArray : Results<Instructor>? 
+    var instructor : Instructor = Instructor()
     let realm = try! Realm()
+    let defaultInstructor = Instructor()
+    var activityFilter: String?
+    var sexFilter: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        defaultInstructor.username = "No instructors match search"
         navigationItem.hidesBackButton = true
         
         searchBar.delegate = self
@@ -31,17 +35,32 @@ class SearchViewController: UITableViewController {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-        
-        
         locationManager.requestLocation()
         
+        loadInstructors("")
         tableView.register(UINib(nibName: K.instructorCellNib, bundle: nil), forCellReuseIdentifier: K.instructorCell)
-        loadInstructors()
+        
         
     }
     
-    func loadInstructors() {
+    func loadInstructors(_ searchText: String) {
         instructorArray = realm.objects(Instructor.self)
+        var predicateArray : [NSPredicate] = []
+        let usernamePredicate = NSPredicate(format: "username CONTAINS[cd] %@", searchText)
+        predicateArray.append(usernamePredicate)
+        if sexFilter != nil {
+            let sexPredicate = NSPredicate(format: "sex CONTAINS[cd] %@", sexFilter!)
+            predicateArray.append(sexPredicate)
+        }
+        if activityFilter != nil {
+            let activityPredicate = NSPredicate(format: "activity CONTAINS %@", activityFilter!)
+            predicateArray.append(activityPredicate)
+        }
+        let compound = NSCompoundPredicate(andPredicateWithSubpredicates: predicateArray)
+        instructorArray = instructorArray?.filter(compound).sorted(byKeyPath: "username", ascending: true)
+        
+        
+        tableView.reloadData()
         
     }
     
@@ -61,23 +80,22 @@ class SearchViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return instructorArray!.count
+           return instructorArray?.count ?? 1
        }
        
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.instructorCell, for: indexPath) as! InstructorChoiceCell
-        cell.profileNameLabel.text = (instructorArray![indexPath.row] as GeneralAccount).username
+        cell.profileNameLabel.text = (instructorArray?[indexPath.row] ?? defaultInstructor as User).username
         
         return cell
     }
        
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.instructor = instructorArray![indexPath.row]
-        
-           
-        tableView.deselectRow(at: indexPath, animated: true)
+            
+               
+        tableView.deselectRow(at: indexPath, animated: false)
         self.performSegue(withIdentifier: K.searchSegueInstructor, sender: self)
-    
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -85,7 +103,8 @@ class SearchViewController: UITableViewController {
             _ = segue.destination as! MessageChoiceViewController
         }
         if segue.identifier == K.searchSegueFilters {
-            _ = segue.destination as! SearchFilterViewController
+            let destinationVC = segue.destination as! SearchFilterViewController
+            destinationVC.previousVC = self
         }
         if segue.identifier == K.searchSegueProfile {
             _ = segue.destination as! YourProfileViewController
@@ -102,10 +121,14 @@ class SearchViewController: UITableViewController {
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if searchBar.text!.count > 0 {
+            loadInstructors(searchBar.text!)
+        }
+        
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        loadInstructors()
+        loadInstructors(searchText)
     }
     
 }

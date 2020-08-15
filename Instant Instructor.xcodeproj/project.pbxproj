@@ -13,7 +13,7 @@
 		C523F01F24B786B20079035A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C523F01D24B786B20079035A /* Main.storyboard */; };
 		C523F02124B786BB0079035A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C523F02024B786BB0079035A /* Assets.xcassets */; };
 		C523F02424B786BB0079035A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C523F02224B786BB0079035A /* LaunchScreen.storyboard */; };
-		C53E319A24DCBA73008F2322 /* GeneralAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53E319924DCBA73008F2322 /* GeneralAccount.swift */; };
+		C53E319A24DCBA73008F2322 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53E319924DCBA73008F2322 /* User.swift */; };
 		C53E31A024DE2278008F2322 /* Instructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53E319F24DE2277008F2322 /* Instructor.swift */; };
 		C53E31CA24E19DC9008F2322 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53E31C924E19DC9008F2322 /* Conversation.swift */; };
 		C540AE3B24D63EF40032545E /* K.swift in Sources */ = {isa = PBXBuildFile; fileRef = C540AE3A24D63EF30032545E /* K.swift */; };
@@ -27,10 +27,7 @@
 		C540AE4B24D9C29E0032545E /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C540AE4A24D9C29E0032545E /* SearchViewController.swift */; };
 		C540AE4E24D9D72A0032545E /* InstructorChoiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C540AE4C24D9D72A0032545E /* InstructorChoiceCell.swift */; };
 		C540AE4F24D9D72A0032545E /* InstructorChoiceCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C540AE4D24D9D72A0032545E /* InstructorChoiceCell.xib */; };
-		C540AE5224D9E0D50032545E /* SliderFilterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C540AE5024D9E0D40032545E /* SliderFilterCell.swift */; };
-		C540AE5324D9E0D50032545E /* SliderFilterCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C540AE5124D9E0D40032545E /* SliderFilterCell.xib */; };
-		C540AE5624D9E2680032545E /* PickerFilterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C540AE5424D9E2680032545E /* PickerFilterCell.swift */; };
-		C540AE5724D9E2680032545E /* PickerFilterCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C540AE5524D9E2680032545E /* PickerFilterCell.xib */; };
+		C54A9EE624E7258300878DB8 /* ConversationFiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54A9EE524E7258300878DB8 /* ConversationFiltersViewController.swift */; };
 		C559821824C129B700156093 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559821724C129B700156093 /* Message.swift */; };
 		C559822324C367F700156093 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559822224C367F700156093 /* MessageViewController.swift */; };
 		C559822B24CA9AC000156093 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C559822A24CA9ABF00156093 /* Default-568h@2x.png */; };
@@ -58,7 +55,7 @@
 		C523F02024B786BB0079035A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C523F02324B786BB0079035A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C523F02524B786BB0079035A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C53E319924DCBA73008F2322 /* GeneralAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAccount.swift; sourceTree = "<group>"; };
+		C53E319924DCBA73008F2322 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C53E319F24DE2277008F2322 /* Instructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instructor.swift; sourceTree = "<group>"; };
 		C53E31C924E19DC9008F2322 /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
 		C540AE3A24D63EF30032545E /* K.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = K.swift; sourceTree = "<group>"; };
@@ -72,10 +69,7 @@
 		C540AE4A24D9C29E0032545E /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		C540AE4C24D9D72A0032545E /* InstructorChoiceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructorChoiceCell.swift; sourceTree = "<group>"; };
 		C540AE4D24D9D72A0032545E /* InstructorChoiceCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InstructorChoiceCell.xib; sourceTree = "<group>"; };
-		C540AE5024D9E0D40032545E /* SliderFilterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderFilterCell.swift; sourceTree = "<group>"; };
-		C540AE5124D9E0D40032545E /* SliderFilterCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SliderFilterCell.xib; sourceTree = "<group>"; };
-		C540AE5424D9E2680032545E /* PickerFilterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerFilterCell.swift; sourceTree = "<group>"; };
-		C540AE5524D9E2680032545E /* PickerFilterCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PickerFilterCell.xib; sourceTree = "<group>"; };
+		C54A9EE524E7258300878DB8 /* ConversationFiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationFiltersViewController.swift; sourceTree = "<group>"; };
 		C559821724C129B700156093 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		C559822224C367F700156093 /* MessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		C559822A24CA9ABF00156093 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -169,10 +163,6 @@
 				C540AE4324D8AAA80032545E /* MessageChoiceCell.xib */,
 				C540AE4C24D9D72A0032545E /* InstructorChoiceCell.swift */,
 				C540AE4D24D9D72A0032545E /* InstructorChoiceCell.xib */,
-				C540AE5024D9E0D40032545E /* SliderFilterCell.swift */,
-				C540AE5124D9E0D40032545E /* SliderFilterCell.xib */,
-				C540AE5424D9E2680032545E /* PickerFilterCell.swift */,
-				C540AE5524D9E2680032545E /* PickerFilterCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -194,6 +184,7 @@
 				C540AE4624D905BA0032545E /* InstructorProfileViewController.swift */,
 				C540AE4824D9BBFE0032545E /* NewConversationViewController.swift */,
 				C540AE4A24D9C29E0032545E /* SearchViewController.swift */,
+				C54A9EE524E7258300878DB8 /* ConversationFiltersViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -204,7 +195,7 @@
 				C559821724C129B700156093 /* Message.swift */,
 				C56A620A24D085C50001D957 /* LocationUpdater.swift */,
 				C5ECD9FB24D32CDC00B7A893 /* UIView+Designable.swift */,
-				C53E319924DCBA73008F2322 /* GeneralAccount.swift */,
+				C53E319924DCBA73008F2322 /* User.swift */,
 				C53E319F24DE2277008F2322 /* Instructor.swift */,
 				C53E31C924E19DC9008F2322 /* Conversation.swift */,
 			);
@@ -272,13 +263,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				C523F02424B786BB0079035A /* LaunchScreen.storyboard in Resources */,
-				C540AE5324D9E0D50032545E /* SliderFilterCell.xib in Resources */,
 				C540AE4F24D9D72A0032545E /* InstructorChoiceCell.xib in Resources */,
 				C540AE3F24D6516D0032545E /* MessageCell.xib in Resources */,
 				C559822B24CA9AC000156093 /* Default-568h@2x.png in Resources */,
 				C5ECD9F824D2115600B7A893 /* GoogleService-Info.plist in Resources */,
 				C540AE4524D8AAA80032545E /* MessageChoiceCell.xib in Resources */,
-				C540AE5724D9E2680032545E /* PickerFilterCell.xib in Resources */,
 				C523F02124B786BB0079035A /* Assets.xcassets in Resources */,
 				C523F01F24B786B20079035A /* Main.storyboard in Resources */,
 			);
@@ -342,14 +331,13 @@
 				C523F01824B786B20079035A /* AppDelegate.swift in Sources */,
 				C540AE4424D8AAA80032545E /* MessageChoiceCell.swift in Sources */,
 				C5ECDA0424D37CB300B7A893 /* WorkViewController.swift in Sources */,
+				C54A9EE624E7258300878DB8 /* ConversationFiltersViewController.swift in Sources */,
 				C559821824C129B700156093 /* Message.swift in Sources */,
 				C53E31A024DE2278008F2322 /* Instructor.swift in Sources */,
-				C540AE5224D9E0D50032545E /* SliderFilterCell.swift in Sources */,
 				C56A620524CC997B0001D957 /* SearchFilterViewController.swift in Sources */,
 				C53E31CA24E19DC9008F2322 /* Conversation.swift in Sources */,
-				C53E319A24DCBA73008F2322 /* GeneralAccount.swift in Sources */,
+				C53E319A24DCBA73008F2322 /* User.swift in Sources */,
 				C540AE4124D8A94A0032545E /* MessageChoiceViewController.swift in Sources */,
-				C540AE5624D9E2680032545E /* PickerFilterCell.swift in Sources */,
 				C523F01A24B786B20079035A /* SceneDelegate.swift in Sources */,
 				C540AE4B24D9C29E0032545E /* SearchViewController.swift in Sources */,
 				C5ECD9FA24D25B0700B7A893 /* RegisterViewController.swift in Sources */,
@@ -509,6 +497,7 @@
 				DEVELOPMENT_TEAM = H77LY4JCN7;
 				GCC_DYNAMIC_NO_PIC = YES;
 				INFOPLIST_FILE = "Instant Instructor/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				LD_NO_PIE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -530,6 +519,7 @@
 				DEVELOPMENT_TEAM = H77LY4JCN7;
 				GCC_DYNAMIC_NO_PIC = YES;
 				INFOPLIST_FILE = "Instant Instructor/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				LD_NO_PIE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

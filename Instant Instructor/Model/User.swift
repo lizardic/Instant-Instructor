@@ -9,9 +9,9 @@
 import Foundation
 import RealmSwift
 
-class GeneralAccount: Object, Codable {
-    @objc dynamic var name: String = ""
-    @objc dynamic var email: String = ""
-    @objc dynamic var password: String = ""
+class User: Object, Codable {
+    @objc dynamic var name: String?
+    @objc dynamic var email: String?
+    @objc dynamic var password: String?
     @objc dynamic var username: String?
 }

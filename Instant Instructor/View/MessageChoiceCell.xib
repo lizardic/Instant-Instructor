@@ -9,48 +9,61 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Message Choice Cell" rowHeight="68" id="KGk-i7-Jjw" customClass="MessageChoiceCell" customModule="Instant_Instructor" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="342" height="68"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Message Choice Cell" rowHeight="104" id="KGk-i7-Jjw" customClass="MessageChoiceCell" customModule="Instant_Instructor" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="337" height="104"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="311" height="68"/>
+                <rect key="frame" x="0.0" y="0.0" width="306" height="104"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vXC-9r-2jy">
-                        <rect key="frame" x="15" y="0.0" width="296" height="68"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="OOi-eT-Z3S">
+                        <rect key="frame" x="10" y="9" width="287" height="95"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="message.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="iHJ-R6-scT">
-                                <rect key="frame" x="0.0" y="0.0" width="40" height="67.5"/>
-                                <color key="tintColor" red="0.83137254900000002" green="0.12941176469999999" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KLi-HN-xmK">
+                                <rect key="frame" x="0.0" y="0.0" width="287" height="31.5"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vXC-9r-2jy">
+                                <rect key="frame" x="0.0" y="31.5" width="287" height="32"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="message.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="iHJ-R6-scT">
+                                        <rect key="frame" x="0.0" y="0.0" width="37.5" height="31.5"/>
+                                        <color key="tintColor" red="0.83137254900000002" green="0.12941176469999999" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Hg8-lm-YSk">
+                                        <rect key="frame" x="37.5" y="0.0" width="249.5" height="32"/>
+                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="25"/>
+                                        <color key="textColor" red="0.83137254900000002" green="0.12941176469999999" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="40" id="q94-6N-fjD"/>
+                                    <constraint firstItem="iHJ-R6-scT" firstAttribute="width" secondItem="Hg8-lm-YSk" secondAttribute="width" multiplier="0.15" id="PZ2-I9-H8G"/>
                                 </constraints>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Hg8-lm-YSk">
-                                <rect key="frame" x="40" y="0.0" width="256" height="68"/>
-                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="25"/>
-                                <color key="textColor" red="0.83137254900000002" green="0.12941176469999999" blue="0.15686274510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yAn-CO-6kC">
+                                <rect key="frame" x="0.0" y="63.5" width="287" height="31.5"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            </view>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="height" constant="68" id="5q6-MK-FDW"/>
+                            <constraint firstItem="vXC-9r-2jy" firstAttribute="centerY" secondItem="OOi-eT-Z3S" secondAttribute="centerY" id="kkV-fv-GXN"/>
                         </constraints>
                     </stackView>
                 </subviews>
                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                 <constraints>
-                    <constraint firstItem="vXC-9r-2jy" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Ets-ge-vpd"/>
-                    <constraint firstAttribute="trailing" secondItem="vXC-9r-2jy" secondAttribute="trailing" id="UGw-cA-mOf"/>
-                    <constraint firstAttribute="bottom" secondItem="vXC-9r-2jy" secondAttribute="bottom" id="Xfh-oW-fyf"/>
-                    <constraint firstItem="vXC-9r-2jy" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="dws-8i-wLs"/>
+                    <constraint firstItem="OOi-eT-Z3S" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="9" id="NZL-aR-ykp"/>
+                    <constraint firstAttribute="bottom" secondItem="OOi-eT-Z3S" secondAttribute="bottom" id="OqR-Sn-e1T"/>
+                    <constraint firstItem="OOi-eT-Z3S" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="fxM-Wi-EVV"/>
+                    <constraint firstAttribute="trailing" secondItem="OOi-eT-Z3S" secondAttribute="trailing" constant="9" id="tB1-DM-w6L"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="profileNameLabel" destination="Hg8-lm-YSk" id="KMn-bT-tao"/>
             </connections>
-            <point key="canvasLocation" x="-14.492753623188406" y="109.82142857142857"/>
+            <point key="canvasLocation" x="-18.115942028985508" y="121.875"/>
         </tableViewCell>
     </objects>
     <resources>

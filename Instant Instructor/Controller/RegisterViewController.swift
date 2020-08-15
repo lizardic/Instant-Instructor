@@ -19,9 +19,10 @@ class RegisterViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var confirmPasswordTextField: UITextField!
+    @IBOutlet weak var instructorButtonView: UIView!
     
     let realm = try! Realm()
-    let newAccount = GeneralAccount()
+    let newAccount = User()
     let newInstructor = Instructor()
     
     override func viewDidLoad() {
@@ -30,6 +31,7 @@ class RegisterViewController: UIViewController {
         emailTextField.delegate = self
         passwordTextField.delegate = self
         confirmPasswordTextField.delegate = self
+        instructorButtonView.layer.cornerRadius = instructorButtonView.frame.size.height / 5
         
     }
     
@@ -58,7 +60,7 @@ class RegisterViewController: UIViewController {
         }
 
     }
-    func saveAccount(_ account: GeneralAccount) {
+    func saveAccount(_ account: User) {
         do {
             try realm.write {
                 realm.add(account)
