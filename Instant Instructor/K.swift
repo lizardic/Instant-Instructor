@@ -28,6 +28,7 @@ struct K {
     static let newMessageSegueMessages = "newMessageToMessages"
     static let newMessageSegueFilters = "newMessageToFilters"
     static let instructorSegueMessages = "instructorToMessage"
+    static let editSegue = "editToWelcome"
     
     static let passwordsDontMatch = "Passwords do not match"
     static let instructorRequirements = "To become an Instructor on Instant Instructor, you must either have received certification to teach the activity or have taught the activity professionally at an organization. If neither of these apply to you, please do not create an Instructor account. "

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import RealmSwift
 
 class WorkViewController: UIViewController {
 
@@ -20,12 +19,11 @@ class WorkViewController: UIViewController {
     @IBOutlet weak var sexPicker: UIPickerView!
     var currentActivity: String?
     var currentSex: String?
-    var newInstructor: Instructor? 
+    var newInstructor: User?
     
     let activityArray: Array = K.activityArray
     let sexArray: Array = K.sexArray
-    
-    let realm = try! Realm()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +45,7 @@ class WorkViewController: UIViewController {
         }
         newInstructor?.workplaceTwo = workPlaceTwoTextField.text ?? ""
         if let yearsExperience = yearsTextField.text {
-            newInstructor?.yearsExperience = yearsExperience
+            newInstructor?.yearsExperience = Int(yearsExperience)
         } else {
             displayError(error: "Fill out # of years experience")
         }
@@ -59,7 +57,7 @@ class WorkViewController: UIViewController {
         if currentSex != "" {
             newInstructor?.sex = currentSex
             self.performSegue(withIdentifier: K.workSegue, sender: self)
-            saveInstructor(newInstructor!)
+            FirestoreService.shared.create(for: newInstructor, to: .User)
         } else {
             displayError(error: "Pick sex")
         }
@@ -67,16 +65,6 @@ class WorkViewController: UIViewController {
         
         
         
-    }
-    
-    func saveInstructor(_ instructor: Instructor) {
-        do {
-            try realm.write {
-                realm.add(instructor)
-            }
-        } catch {
-            print("Error saving instructor, \(error)")
-        }
     }
     
     func displayError(error: String) {

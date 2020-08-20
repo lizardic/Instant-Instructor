@@ -9,7 +9,6 @@
 import UIKit
 import Firebase
 import FirebaseAuth
-import RealmSwift
 
 class MessageViewController: UIViewController {
 
@@ -17,39 +16,24 @@ class MessageViewController: UIViewController {
     @IBOutlet weak var navigationBar: UINavigationItem!
     
     @IBOutlet weak var tableView: UITableView!
-    let realm = try! Realm()
-    var messages: Results<Message>?
+    var messages: [Message]?
     var parentConversation: Conversation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadMessages()
         messageTextField.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UINib(nibName: K.messageCellNib, bundle: nil), forCellReuseIdentifier: K.messageCell)
-        
-        
-        navigationBar.title = getOtherParticipants(parentConversation!)
-        
-        
-    }
-    
-    func getOtherParticipants(_ conversation: Conversation) -> String {
-        let participants = conversation.participants
-        var otherParticipants = ""
-        for participant in participants {
-            if participant.email != Auth.auth().currentUser?.email {
-                otherParticipants = otherParticipants +  participant.username!
-            }
+        //read simply prints, should store values in messages
+        FirestoreService.shared.read(from: .Message, returning: Message.self) { (messages) in
+            self.messages = messages
         }
-        return otherParticipants
+        tableView.reloadData()
+        
+        
     }
     
-    func loadMessages() {
-        messages = parentConversation?.messages.sorted(byKeyPath: "date", ascending: true)
-        tableView.reloadData()
-    }
 }
 
 //MARK: - UITextFieldDelegate
@@ -68,29 +52,19 @@ extension MessageViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         //Use the textfield.text to do whatever you need
-        if let messageBody = messageTextField.text, let messageSender = Auth.auth().currentUser?.email {
-            let newMessage = Message()
-            newMessage.body = messageBody
-            newMessage.sender = messageSender
-            newMessage.date = Date()
-            saveMessage(newMessage)
-            loadMessages()
+        if let messageBody = messageTextField.text {
+            let newMessage = Message(senderUsername: parentConversation?.senderUsername ?? "", recipientUsername: parentConversation?.recipientUsername ?? "", body: messageBody, date: Date())
+            FirestoreService.shared.create(for: newMessage, to: .Message)
+            //read simply prints atm, should update messages
+            FirestoreService.shared.read(from: .Message, returning: Message.self) { (messages) in
+                self.messages = messages
+                self.tableView.reloadData()
+            }
         }
         messageTextField.text = ""
         
     }
-    func saveMessage(_ message: Message) {
-        if let currentConversation = self.parentConversation {
-            do {
-                try realm.write {
-                    currentConversation.messages.append(message)
-                    }
-                } catch {
-                    print("Error saving message, \(error)")
-                }
-            }
-        }
-        
+
 }
 
 //MARK: - UITableViewDataSource
@@ -104,18 +78,7 @@ extension MessageViewController: UITableViewDataSource {
         let message = messages![indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: K.messageCell, for: indexPath) as! MessageCell
         cell.label.text = message.body
-//      ADJUSTING CELL LOOK BASED ON WHO SENT IT
-//        if message.sender == Auth.auth().currentUser?.email {
-//            cell.leftImageView.isHidden = true
-//            cell.leftFillerImageView.isHidden = false
-//            cell.rightImageView.isHidden = true
-//        } else {
-//            cell.leftImageView.isHidden = false
-//            cell.leftFillerImageView.isHidden = true
-//            cell.rightImageView.isHidden = false
-//            cell.messageBubble.backgroundColor = UIColor(named: "BrandDarkGray")
-//        }
-
+    
         return cell
    }
 }

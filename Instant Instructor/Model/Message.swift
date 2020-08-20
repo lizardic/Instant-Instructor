@@ -7,12 +7,18 @@
 //
 
 import Foundation
-import RealmSwift
 
-class Message: Object {
-    @objc dynamic var sender: String?
-    @objc dynamic var body: String?
-    @objc dynamic var date: Date?
-    var parentConversation = LinkingObjects(fromType: Conversation.self, property: "messages")
+class Message: Codable {
+    var senderUsername: String?
+    var recipientUsername: String?
+    var body: String?
+    var date: Date?
+    
+    init(senderUsername: String, recipientUsername: String, body: String, date: Date) {
+        self.senderUsername = senderUsername
+        self.recipientUsername = recipientUsername
+        self.body = body
+        self.date = date
+    }
 }
 

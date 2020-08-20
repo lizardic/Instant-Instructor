@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import RealmSwift
+import FirebaseAuth
+import FirebaseFirestore
 
 class EditProfileViewController: UIViewController {
 
@@ -29,31 +30,34 @@ class EditProfileViewController: UIViewController {
     
     var currentSex: String?
     var currentActivity: String?
-    let realm = try! Realm()
     
     var currentUser: User?
+    let db = Firestore.firestore()
     override func viewDidLoad() {
         super.viewDidLoad()
-        //get correct user
-        
-        let user = User()
-        prepareGeneral(user)
-        if let instructor = user as? Instructor {
-            print(instructor)
-            if instructor.organizationCertified != nil {
-                certifiedInstructorStack.isHidden = false
-                experiencedInstructorStack.isHidden = true
-                generalInstructorStack.isHidden = false
-                prepareCertifiedStack(instructor)
-                prepareGeneralInstructorStack(instructor)
-                
-            } else {
-                certifiedInstructorStack.isHidden = true
-                experiencedInstructorStack.isHidden = false
-                generalInstructorStack.isHidden = false
-                prepareExperiencedStack(instructor)
-                prepareGeneralInstructorStack(instructor)
-            }
+        db.collection("User").whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "")
+            .getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        self.currentUser = document.decode(as: User.self)
+                    }
+                }
+        }
+        prepareGeneral(currentUser!)
+        if currentUser!.organizationCertified != nil {
+            certifiedInstructorStack.isHidden = false
+            experiencedInstructorStack.isHidden = true
+            generalInstructorStack.isHidden = false
+            prepareCertifiedStack(currentUser!)
+            prepareGeneralInstructorStack(currentUser!)
+        } else if currentUser!.yearsExperience != nil {
+            certifiedInstructorStack.isHidden = true
+            experiencedInstructorStack.isHidden = false
+            generalInstructorStack.isHidden = false
+            prepareExperiencedStack(currentUser!)
+            prepareGeneralInstructorStack(currentUser!)
         } else {
             certifiedInstructorStack.isHidden = true
             experiencedInstructorStack.isHidden = true
@@ -68,106 +72,58 @@ class EditProfileViewController: UIViewController {
         passwordTextField.text = user.password
         
     }
-    func prepareGeneralInstructorStack(_ instructor: Instructor) {
-        sexPicker.setValue(instructor.sex, forKey: "sex")
-        activityPicker.setValue(instructor.activity, forKey: "activity")
+    func prepareGeneralInstructorStack(_ user: User) {
+        sexPicker.setValue(user.sex, forKey: "sex")
+        activityPicker.setValue(user.activity, forKey: "activity")
     }
-    func prepareExperiencedStack(_ instructor: Instructor) {
-        workplace.text = instructor.workplace!
-        workplaceTwo.text = instructor.workplaceTwo!
-        yearsExperience.text =  instructor.yearsExperience!
+    func prepareExperiencedStack(_ user: User) {
+        workplace.text = user.workplace!
+        workplaceTwo.text = user.workplaceTwo!
+        yearsExperience.text =  String(user.yearsExperience!)
         
     }
     
-    func prepareCertifiedStack(_ instructor: Instructor) {
-        certifiedOrganization.text = instructor.organizationCertified!
-        datePicker.setValue(instructor.certificationDate, forKey: "date")
-    }
-    
-    
-    func updateInfo(_ textField: UITextField) {
-        //get correct user
-        let user = Instructor()
-        if textField == nameTextField {
-            do {
-                try realm.write {
-                    user.name = nameTextField.text
-                }
-            } catch {
-                print("Error updating name, \(error)")
-                }
-            }
-        else if textField == usernameTextField {
-            do {
-                try realm.write {
-                    user.username = usernameTextField.text
-                }
-            } catch {
-                print("Error updating username, \(error)")
-            }
-        }
-        else if textField == emailTextField {
-            do {
-                try realm.write {
-                    user.email = emailTextField.text
-                }
-            } catch {
-                print("Error updating email, \(error)")
-            }
-            user.email = emailTextField.text
-        } else if textField == passwordTextField {
-            do {
-                try realm.write {
-                    user.password = passwordTextField.text
-                }
-            } catch {
-                print("Error updating password, \(error)")
-            }
-        } else if textField == certifiedOrganization {
-            do {
-                try realm.write {
-                    user.organizationCertified = certifiedOrganization.text
-                }
-            } catch {
-                print("Error updating organization, \(error)")
-            }
-        } else if textField == workplace {
-            do {
-                try realm.write {
-                    user.workplace = workplace.text
-                }
-            } catch {
-                print("Error updating workplace, \(error)")
-            }
-            
-        } else if textField == workplaceTwo {
-            do {
-                try realm.write {
-                    user.workplaceTwo = workplaceTwo.text
-                }
-            } catch {
-                print("Error updating other workplace, \(error)")
-            }
-        }
+    func prepareCertifiedStack(_ user: User) {
+        certifiedOrganization.text = user.organizationCertified!
+        datePicker.setValue(user.certificationDate, forKey: "date")
     }
     
     @IBAction func deleteAccountButtonPressed(_ sender: UIBarButtonItem) {
-        //get correct user
-        // distinguish between general account and instructor
-        let user = User()
+        //should probably show an are you sure? screen
         do {
-            try realm.write {
-                realm.delete(user)
-            }
+            try FirestoreService.shared.delete(currentUser!, in: .User)
+            self.performSegue(withIdentifier: K.editSegue, sender: self)
         } catch {
             print("Error deleting account, \(error)")
         }
-
+    }
+    
+    func newUserInfo(tf: UITextField) -> User {
+        let updatedUser = currentUser!
+        if tf == nameTextField {
+            updatedUser.name = nameTextField.text!
+        } else if tf == emailTextField {
+            updatedUser.email = emailTextField.text!
+        } else if tf == usernameTextField {
+            updatedUser.username = usernameTextField.text!
+        } else if tf == passwordTextField {
+            updatedUser.password = passwordTextField.text!
+        } else if tf == workplace {
+            updatedUser.workplace = workplace.text!
+        } else if tf == workplaceTwo {
+            updatedUser.workplaceTwo = workplaceTwo.text!
+        } else if tf == yearsExperience {
+            updatedUser.yearsExperience = Int(yearsExperience.text!)
+        }
+        return updatedUser
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-
+        if segue.identifier == K.editSegue {
+            _ = segue.destination as! WelcomeViewController
+        }
     }
+
 }
 
 //MARK: - UITextFieldDelegate
@@ -181,7 +137,8 @@ extension EditProfileViewController: UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        updateInfo(textField)
+        let user = newUserInfo(tf: textField)
+        FirestoreService.shared.update(for: user, to: .User)
         
     }
 }

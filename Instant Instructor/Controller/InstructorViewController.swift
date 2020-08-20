@@ -11,7 +11,7 @@ import UIKit
 class InstructorViewController: UIViewController {
 
     @IBOutlet weak var coachRequirementsLabel: UILabel!
-    var newInstructor: Instructor?
+    var newInstructor: User?
     
     @IBOutlet weak var certificationButtonView: UIView!
     @IBOutlet weak var experiencedButtonView: UIView!

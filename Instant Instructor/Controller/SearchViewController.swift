@@ -8,26 +8,24 @@
 
 import UIKit
 import CoreLocation
-import RealmSwift
 
-class SearchViewController: UITableViewController {
+class SearchViewController: UIViewController {
     
     
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var tableView: UITableView!
     
     let locationManager = CLLocationManager()
     var locationUpdater = LocationUpdater()
-    var instructorArray : Results<Instructor>? 
-    var instructor : Instructor = Instructor()
-    let realm = try! Realm()
-    let defaultInstructor = Instructor()
+    var users : [User]?
+    var user: User?
     var activityFilter: String?
     var sexFilter: String?
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        defaultInstructor.username = "No instructors match search"
         navigationItem.hidesBackButton = true
         
         searchBar.delegate = self
@@ -36,33 +34,21 @@ class SearchViewController: UITableViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         locationManager.requestLocation()
-        
-        loadInstructors("")
         tableView.register(UINib(nibName: K.instructorCellNib, bundle: nil), forCellReuseIdentifier: K.instructorCell)
+        loadUsers()
+       }
         
         
-    }
-    
-    func loadInstructors(_ searchText: String) {
-        instructorArray = realm.objects(Instructor.self)
-        var predicateArray : [NSPredicate] = []
-        let usernamePredicate = NSPredicate(format: "username CONTAINS[cd] %@", searchText)
-        predicateArray.append(usernamePredicate)
-        if sexFilter != nil {
-            let sexPredicate = NSPredicate(format: "sex CONTAINS[cd] %@", sexFilter!)
-            predicateArray.append(sexPredicate)
+        
+        
+    func loadUsers() {
+        FirestoreService.shared.read(from: .User, returning: User.self) { (users) in
+            self.users = users
+            self.tableView.reloadData()
         }
-        if activityFilter != nil {
-            let activityPredicate = NSPredicate(format: "activity CONTAINS %@", activityFilter!)
-            predicateArray.append(activityPredicate)
-        }
-        let compound = NSCompoundPredicate(andPredicateWithSubpredicates: predicateArray)
-        instructorArray = instructorArray?.filter(compound).sorted(byKeyPath: "username", ascending: true)
-        
-        
-        tableView.reloadData()
-        
     }
+        
+        
     
     @IBAction func profileButtonPressed(_ sender: UIBarButtonItem) {
         self.performSegue(withIdentifier: K.searchSegueProfile, sender: self)
@@ -77,27 +63,12 @@ class SearchViewController: UITableViewController {
     @IBAction func messageButtonPressed(_ sender: UIBarButtonItem) {
         self.performSegue(withIdentifier: K.searchSegueMessageChoice, sender: self)
     }
-    
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return instructorArray?.count ?? 1
-       }
-       
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: K.instructorCell, for: indexPath) as! InstructorChoiceCell
-        cell.profileNameLabel.text = (instructorArray?[indexPath.row] ?? defaultInstructor as User).username
+  
+    func query(searchText: String, sex: String, activity: String) {
+        //use filters to adjust instructorArray
         
-        return cell
+        loadUsers()
     }
-       
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.instructor = instructorArray![indexPath.row]
-            
-               
-        tableView.deselectRow(at: indexPath, animated: false)
-        self.performSegue(withIdentifier: K.searchSegueInstructor, sender: self)
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == K.searchSegueMessageChoice {
             _ = segue.destination as! MessageChoiceViewController
@@ -111,7 +82,7 @@ class SearchViewController: UITableViewController {
         }
         if segue.identifier == K.searchSegueInstructor {
             let destinationVC = segue.destination as! InstructorProfileViewController
-            destinationVC.instructor = self.instructor
+            destinationVC.instructor = self.user
         }
 
     }
@@ -121,14 +92,11 @@ class SearchViewController: UITableViewController {
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if searchBar.text!.count > 0 {
-            loadInstructors(searchBar.text!)
-        }
-        
+        query(searchText: searchBar.text ?? "", sex: sexFilter ?? "", activity: activityFilter ?? "")
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        loadInstructors(searchText)
+        query(searchText: searchBar.text ?? "", sex: sexFilter ?? "", activity: activityFilter ?? "")
     }
     
 }
@@ -164,3 +132,25 @@ extension SearchViewController: LocationUpdaterDelegate {
     }
 }
 
+extension SearchViewController: UITableViewDataSource {
+      
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return users!.count
+    }
+         
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.instructorCell, for: indexPath) as! InstructorChoiceCell
+        cell.profileNameLabel.text = users![indexPath.row].username
+          
+        return cell
+      }
+         
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.user = users![indexPath.row]
+              
+                 
+        tableView.deselectRow(at: indexPath, animated: false)
+        self.performSegue(withIdentifier: K.searchSegueInstructor, sender: self)
+      }
+    
+}

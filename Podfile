@@ -7,6 +7,7 @@ target 'Instant Instructor' do
   pod 'Firebase/Auth'
   pod 'Firebase/Firestore'
   pod 'IQKeyboardManagerSwift'
-  pod 'RealmSwift'
+  pod 'SwipeCellKit'
+  pod 'AlgoliaSearchClient', '~> 8.0'
 
 end

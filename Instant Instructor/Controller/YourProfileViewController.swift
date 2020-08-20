@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import FirebaseFirestore
 
 class YourProfileViewController: UIViewController {
     var currentUser : User?
@@ -26,28 +27,34 @@ class YourProfileViewController: UIViewController {
     @IBOutlet weak var certifiedInstructorStack: UIStackView!
     @IBOutlet weak var experiencedInstructorStack: UIStackView!
     
-    
+    let db = Firestore.firestore()
     override func viewDidLoad() {
         super.viewDidLoad()
         //get correct user
-        let user = User()
-        prepareGeneral(user)
-        if let instructor = user as? Instructor {
-            print(instructor)
-            if instructor.organizationCertified != nil {
-                certifiedInstructorStack.isHidden = false
-                experiencedInstructorStack.isHidden = true
-                generalInstructorStack.isHidden = false
-                prepareCertifiedStack(instructor)
-                prepareGeneralInstructorStack(instructor)
-                
-            } else {
-                certifiedInstructorStack.isHidden = true
-                experiencedInstructorStack.isHidden = false
-                generalInstructorStack.isHidden = false
-                prepareExperiencedStack(instructor)
-                prepareGeneralInstructorStack(instructor)
-            }
+        let email: String = (Auth.auth().currentUser?.email)!
+        db.collection("User").whereField("email", isEqualTo: email)
+            .getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        self.currentUser = document.decode(as: User.self)
+                    }
+                }
+        }
+        prepareGeneral(currentUser!)
+        if currentUser!.organizationCertified != nil {
+            certifiedInstructorStack.isHidden = false
+            experiencedInstructorStack.isHidden = true
+            generalInstructorStack.isHidden = false
+            prepareCertifiedStack(currentUser!)
+            prepareGeneralInstructorStack(currentUser!)
+        } else if currentUser!.yearsExperience != nil {
+            certifiedInstructorStack.isHidden = true
+            experiencedInstructorStack.isHidden = false
+            generalInstructorStack.isHidden = false
+            prepareExperiencedStack(currentUser!)
+            prepareGeneralInstructorStack(currentUser!)
         } else {
             certifiedInstructorStack.isHidden = true
             experiencedInstructorStack.isHidden = true
@@ -67,20 +74,20 @@ class YourProfileViewController: UIViewController {
         usernameLabel.text = user.username
         
     }
-    func prepareGeneralInstructorStack(_ instructor: Instructor) {
-        sexLabel.text = instructor.sex
-        activityLabel.text = instructor.activity
+    func prepareGeneralInstructorStack(_ user: User) {
+        sexLabel.text = user.sex
+        activityLabel.text = user.activity
     }
-    func prepareExperiencedStack(_ instructor: Instructor) {
-        workplaceLabel.text = "Current Workplace: " + instructor.workplace!
-        workplaceTwoLabel.text = "Another Workplace: " + instructor.workplaceTwo!
-        yearsExperienceLabel.text = "Years of Experience: " + instructor.yearsExperience!
+    func prepareExperiencedStack(_ user: User) {
+        workplaceLabel.text = "Current Workplace: " + user.workplace!
+        workplaceTwoLabel.text = "Another Workplace: " + user.workplaceTwo!
+        yearsExperienceLabel.text = "Years of Experience: \(user.yearsExperience!)"
         
     }
     
-    func prepareCertifiedStack(_ instructor: Instructor) {
-        certifiedOrganizationLabel.text = "Certified By: " +  instructor.organizationCertified!
-        expirationDateLabel.text = "Certification Expires: " + dateToString(instructor.certificationDate!)
+    func prepareCertifiedStack(_ user: User) {
+        certifiedOrganizationLabel.text = "Certified By: " +  user.organizationCertified!
+        expirationDateLabel.text = "Certification Expires: " + dateToString(user.certificationDate!)
     }
     
     func dateToString(_ date: Date) -> String {

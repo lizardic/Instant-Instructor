@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import RealmSwift
 
 class InstructorProfileViewController: UIViewController {
 
@@ -24,8 +23,7 @@ class InstructorProfileViewController: UIViewController {
     @IBOutlet weak var certifiedStack: UIStackView!
     @IBOutlet weak var experiencedStack: UIStackView!
     var conversation: Conversation?
-    let realm = try! Realm()
-    var instructor : Instructor?
+    var instructor : User?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,21 +33,13 @@ class InstructorProfileViewController: UIViewController {
     }
 
     @IBAction func newMessageButonPressed(_ sender: UIBarButtonItem) {
-        let newConversation = Conversation()
+        let newConversation = Conversation(senderUsername: "sender", recipientUsername: "recipient")
         conversation = newConversation
-        saveConversation(newConversation)
+        FirestoreService.shared.create(for: newConversation, to: .Conversation)
         self.performSegue(withIdentifier: K.instructorSegueMessages, sender: self)
     }
 
-    func saveConversation(_ conversation: Conversation) {
-        do {
-            try realm.write {
-                realm.add(conversation)
-            }
-        } catch {
-            print("Error saving conversation, \(error)")
-        }
-    }
+ 
     
     func adjustToInstructor() {
         navigationBar.title = instructor!.username
@@ -81,7 +71,7 @@ class InstructorProfileViewController: UIViewController {
             
 
             let years = instructor?.yearsExperience
-            yearsExperienceLabel.text = "Experience (years):  " + years!
+            yearsExperienceLabel.text = "Experience (years):  \(years!)" 
             
         }
 

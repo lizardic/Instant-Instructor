@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import RealmSwift
 
 class CertificationViewController: UIViewController {
 
@@ -17,12 +16,10 @@ class CertificationViewController: UIViewController {
     @IBOutlet weak var sexPicker: UIPickerView!
     var currentActivity: String?
     var currentSex: String?
-    var newInstructor : Instructor? 
+    var newInstructor : User?
     
     let activityArray: Array = K.activityArray
     let sexArray: Array = K.sexArray
-    
-    let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,21 +46,12 @@ class CertificationViewController: UIViewController {
         if let sex = currentSex {
             newInstructor?.sex = sex
             self.performSegue(withIdentifier: K.certificationSegue, sender: self)
-            saveInstructor(newInstructor!)
+            FirestoreService.shared.create(for: newInstructor, to: .User)
         } else {
             displayError(error: "Pick Sex")
         }
         
         
-    }
-    func saveInstructor(_ instructor: Instructor) {
-        do {
-            try realm.write {
-                realm.add(instructor)
-            }
-        } catch {
-            print("Error saving instructor, \(error)")
-        }
     }
     
     func displayError(error: String) {

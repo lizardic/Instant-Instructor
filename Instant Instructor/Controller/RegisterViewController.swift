@@ -9,7 +9,6 @@
 import UIKit
 import Firebase
 import FirebaseAuth
-import RealmSwift
 
 class RegisterViewController: UIViewController {
 
@@ -20,10 +19,7 @@ class RegisterViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var instructorButtonView: UIView!
-    
-    let realm = try! Realm()
-    let newAccount = User()
-    let newInstructor = Instructor()
+    var instructor: User?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,11 +40,8 @@ class RegisterViewController: UIViewController {
                     if let e = error {
                         self.displayError(error: e.localizedDescription)
                     } else {
-                        self.newAccount.name = self.fullNameTextField.text!
-                        self.newAccount.username = self.usernameTextField.text!
-                        self.newAccount.email = self.emailTextField.text!
-                        self.newAccount.password = self.passwordTextField.text!
-                        self.saveAccount(self.newAccount)
+                        let account = User(name: self.fullNameTextField.text!, email: self.emailTextField.text!, password: self.passwordTextField.text!, username: self.usernameTextField.text!)
+                        FirestoreService.shared.create(for: account, to: .User)
                         
                         self.performSegue(withIdentifier: K.registerSegueSearch, sender: self)
                     }
@@ -60,15 +53,7 @@ class RegisterViewController: UIViewController {
         }
 
     }
-    func saveAccount(_ account: User) {
-        do {
-            try realm.write {
-                realm.add(account)
-            }
-        } catch {
-            print("Error saving account, \(error)")
-        }
-    }
+    
     func displayError(error: String) {
         let alert = UIAlertController(title: "Failed Sign Up Attempt", message: error, preferredStyle: .alert)
         let action = UIAlertAction(title: "Dismiss", style: .default) { (action) in
@@ -90,10 +75,7 @@ class RegisterViewController: UIViewController {
                      if let e = error {
                          self.displayError(error: e.localizedDescription)
                      } else {
-                        self.newInstructor.name = self.fullNameTextField.text!
-                        self.newInstructor.username = self.usernameTextField.text!
-                        self.newInstructor.email = self.emailTextField.text!
-                        self.newInstructor.password = self.passwordTextField.text!
+                        self.instructor = User(name: self.fullNameTextField.text!, email: self.emailTextField.text!, password: self.passwordTextField.text!, username: self.usernameTextField.text!)
                         
                          self.performSegue(withIdentifier: K.registerSegueInstructor, sender: self)
                      }
@@ -108,7 +90,7 @@ class RegisterViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == K.registerSegueInstructor {
             let destinationVC = segue.destination as! InstructorViewController
-            destinationVC.newInstructor = newInstructor
+            destinationVC.newInstructor = instructor
         }
         if segue.identifier == K.registerSegueSearch {
             _ = segue.destination as! SearchViewController
